@@ -38,9 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'notemaker_django_reactjs',
+    'notemaker_djano_reactjs',
+    'rest_framework',
 ]
-
+#note to self fix the djano typo in the installed apps and the urls.py file
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'need_done.lib.authentication.CsrfExemptSessionAuthentication',
+   ),
+   #
+   'DEFAULT_PERMISSION_CLASSES': (
+       'rest_framework.permissions.IsAuthenticated',),
+   'EXCEPTION_HANDLER': 'notemaker_djano_reactjs.lib.exceptions.custom_exception_handler',
+   'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -106,8 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+#note to self -> change the timezone to Asia/Kolkata
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
