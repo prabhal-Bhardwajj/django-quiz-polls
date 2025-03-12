@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from django.utils.timezone import now
+from django.contrib.auth.models import User
 
 class NoteCategory(models.TextChoices):
     PERSONAL = 'Personal', _('Personal')
@@ -58,6 +59,7 @@ class Notes(models.Model):
     content = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     password = models.CharField(max_length=128, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
     
     category = models.CharField(
         max_length=30,
