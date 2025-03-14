@@ -86,3 +86,60 @@ class Notes(models.Model):
 
     def __str__(self):
         return self.title
+class CornellNotes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cornell_notes')
+    title = models.CharField(max_length=200)
+    show_title = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    show_dates = models.BooleanField(default=True)
+    
+    
+    cues_questions = models.TextField(
+        _('Cues/Questions'),
+        blank=True,
+        help_text="Key questions or main ideas"
+    )
+    main_notes = models.TextField(
+        _('Main Notes'),
+        help_text="Detailed notes content"
+    )
+    summary = models.TextField(
+        _('Summary'),
+        blank=True,
+        help_text="Key takeaways and conclusions"
+    )
+    
+    category = models.CharField(
+        max_length=30,
+        choices=NoteCategory.choices,
+        default=NoteCategory.UNMARKED
+    )
+    
+    # Security Purpose
+    is_protected = models.BooleanField(default=False)
+    password = models.CharField(
+        max_length=128, 
+        blank=True, 
+        null=True,
+        help_text="Optional password protection"
+    )
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name_plural = 'Cornell Notes'
+
+    def save(self, *args, **kwargs):
+        # Handle password protection
+        if self.is_protected and self.password:
+            self.password = make_password(self.password)
+        elif not self.is_protected:
+            self.password = None
+            
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.title} - {self.get_category_display()}"
+
+    def is_locked(self):
+        return self.is_protected and bool(self.password)
